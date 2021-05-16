@@ -1,0 +1,7 @@
+git clone "URL" -> clones the repository on your local machine.
+git status -> shows the status of your local repository (branch/modified or added files, etc...)
+
+git add 'File name' -> to use in case you added a local file in your local repository. Use "git add -A" to add all.
+git commit -a -m "my custom message" -> commits the changes to your local repo (-a all changes, -m message)
+git push origin main -> pushes to the github remote repository (default origin), to the main branch.
+git pull origin main -> same as above, but pulls instead of pushing.

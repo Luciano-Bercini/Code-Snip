@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+    <h1>Code Snip</h1>
+    <h2>
+        Updating code snippet.
+    </h2>
+    <form action="/update/{{snippet.id}}" method="post">
+        <h3 class="centered-text medium-text very-small-top-bottom-margin">Title</h3>
+        <input type="text" name="title" id="title" value="{{snippet.title}}" class="centered-block post-content"><br>
+        <h3 class="centered-text medium-text very-small-top-bottom-margin">Content</h3>
+        <textarea type="text" name="content" id="content" cols="100" rows="10" class="centered-block post-content">{{snippet.content}}</textarea><br>
+        <input type="submit" value="Update your code snippet!" class="centered-block">
+    </form>
+{% endblock %}
