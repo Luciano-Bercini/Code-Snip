@@ -31,14 +31,14 @@ def index():
         posts = Post.query.order_by(Post.date_created).all()
         return render_template('index.html', posts=posts)
 
-#@app.route('/information')
-#def information():
-#    return render_template('information.html')
+@app.route('/information')
+def information():
+    return render_template('information.html')
 
 
-#@app.route('/contact')
-#def contact():
-#    return render_template('contact.html')
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
