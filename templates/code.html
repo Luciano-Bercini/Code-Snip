@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% block main_header %} {% endblock %}
+<form {% block form_action %} {% endblock %}>
+        <h3 class="centered-text medium-text very-small-top-bottom-margin">Title</h3>
+        <input type="text" name="title" id="title" placeholder="Your title..." class="centered-block post-content"
+               {% block snippet_title_value %}
+               {% endblock %}
+               ><br>
+
+        <h3 class="centered-text medium-text very-small-top-bottom-margin">Content</h3>
+        <textarea name="content" id="content" placeholder="Your code..." rows="10" class="centered-block post-content">{% block snippet_content_value %}{% endblock %}</textarea><br>
+
+        <h3 class="centered-text medium-text very-small-top-bottom-margin">Language</h3>
+        <select name="language" id="language" class="centered-block post-content">
+            <option value="c">C</option>
+            <option value="c++">C++</option>
+            <option value="c#">C#</option>
+            <option value="java">Java</option>
+            <option value="javascript">Javascript</option>
+            <option value="unity c#">Unity C#</option>
+            {% block snippet_language_selected %}
+            {% endblock %}
+        </select><br>
+    {% block button %} {% endblock %}
+    </form>
+{% endblock %}

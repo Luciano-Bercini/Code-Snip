@@ -1,30 +1,25 @@
-{% extends 'base.html' %}
+{% extends "code.html" %}
 
-{% block head %}
-
+{% block main_header %}
+    <h1>Code Snip is the ultimate platform for sharing and reviewing code snippets.</h1><br>
 {% endblock %}
-
-{% block body %}
-    <h1>Code Snip</h1>
-    <h2>
-        Code Snip is the ultimate platform for sharing and reviewing code snippets.
-    </h2>
-    <form action="/" method="post">
-        <h3 class="centered-text medium-text very-small-top-bottom-margin">Title</h3>
-        <input type="text" name="title" id="title" placeholder="Your title..." class="centered-block post-content"><br>
-        <h3 class="centered-text medium-text very-small-top-bottom-margin">Content</h3>
-        <textarea name="content" id="content" placeholder="Your code..." rows="10" class="centered-block post-content"></textarea><br>
-        <input type="submit" value="Post your code snippet!" class="centered-block">
-    </form>
-    <h4 class="centered-text medium-text">
-        {% for post in posts %}
-        {{ post.id }}
-        {{ post.title }}
-        {{ post.date_created.date() }}
-            <a href="/update/{{post.id}}" >Update</a>
-            <a href="/delete/{{post.id}}">Delete</a>
-            <br>
-        {% endfor %}
-    </h4>
-
+{% block form_action %}
+    action="/" method="post"
+{% endblock %}
+{% block button %}
+    <input type="submit" value="Post your code snippet!" class="centered-block"><br>
+        <nav class="pure-g">
+            <div class="pure-u-1-5 centered-text medium-text"> Title </div>
+            <div class="pure-u-1-5 centered-text medium-text"> Language </div>
+            <div class="pure-u-1-5 centered-text medium-text"> Date </div>
+        </nav><br>
+    {% for post in posts %}
+        <nav class="pure-g">
+            <div class="pure-u-1-5 centered-text medium-text"> {{ post.title }} </div>
+            <div class="pure-u-1-5 centered-text medium-text"> {{ post.language }} </div>
+            <div class="pure-u-1-5 centered-text medium-text"> {{ post.date_created.date() }} </div>
+            <div class="pure-u-1-5 centered-text medium-text"> <a href="/update/{{post.id}}"> Edit </a> </div>
+            <div class="pure-u-1-5 centered-text medium-text"> <a href="/delete/{{post.id}}">Delete</a> </div>
+        </nav>
+    {% endfor %}
 {% endblock %}

@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css">
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/base-min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    {% block head %} {% endblock %}
+    {% block head %}
+    {% endblock %}
     <title>Code Snip</title>
 </head>
 <body>
@@ -32,7 +33,8 @@
             </div>
         </nav>
     </header>
-    {% block body%} {% endblock %}
+    {% block body %}
+    {% endblock %}
     <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
