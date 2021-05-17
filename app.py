@@ -1,9 +1,6 @@
-import textwrap
-
 from flask import Flask, render_template, request, redirect
 from datetime import *
 from flask_sqlalchemy import *
-from textwrap import *
 from flask_migrate import Migrate
 
 app = Flask(__name__)
