@@ -1,17 +1,13 @@
 {% extends "code.html" %}
 
-{% block main_header %}
-    <h1> Editing your code snippet is always exciting. </h1><br>
-{% endblock %}
-{% block form_action %}
-    action="/update/{{snippet.id}}" method="post"
-{% endblock %}
-{% block snippet_title_value %}
-value="{{ snippet.title }}"
-{% endblock %}
-{% block snippet_content_value %}
-{{ snippet.content }}
-{% endblock %}
+{% block main_header %} <h1> Editing your code snippet is always exciting. </h1><br> {% endblock %}
+
+{% block form_action %} action="/update/{{snippet.id}}" method="post" {% endblock %}
+
+{% block snippet_title_value %}value="{{ snippet.title }}"{% endblock %}
+
+{% block snippet_content_value %}{{ snippet.content }}{% endblock %}
+
 {% block snippet_language_selected %}
     <option selected="selected" hidden>{{ snippet.language.capitalize() }}</option>
 {% endblock %}

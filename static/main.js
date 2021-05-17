@@ -13,7 +13,11 @@ function registerServiceWorker() {
         }
     })
 }
-
+function updateCode(text) {
+  let result_element = document.querySelector("#highlight");
+  result_element.innerHTML = text.replace(new RegExp("&", "g"), "&").replace(new RegExp("<", "g"), "<");
+  hljs.highlightBlock(result_element);
+}
 function insertHeader()
 {
     let header = document.createElement("header");
