@@ -33,8 +33,7 @@ def index():
         except:
             return 'There was an issue posting your task.'
     else:
-        posts = Post.query.order_by(Post.date_created).all()
-        return render_template('index.html', posts=posts)
+        return render_template('index.html')
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
@@ -52,13 +51,26 @@ def update(id):
         return render_template('update.html', snippet=snippet_to_update)
 
 
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == 'POST':
+        post_title = request.form['title']
+        if post_title:
+            posts = Post.query.filter(Post.title.contains(post_title)).all()
+        else:
+            posts = Post.query.all()
+    else:
+        posts = Post.query.order_by(Post.date_created).all()
+    return render_template('/search.html', posts=posts)
+
+
 @app.route('/delete/<int:id>')
 def delete(id):
     task_to_delete = Post.query.get_or_404(id)
     try:
         db.session.delete(task_to_delete)
         db.session.commit()
-        return redirect('/')
+        return redirect('/search')
     except:
         return 'There was a problem deleting the task.'
 

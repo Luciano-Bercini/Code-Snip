@@ -7,19 +7,5 @@
     action="/" method="post"
 {% endblock %}
 {% block button %}
-    <input type="submit" value="Post your code snippet!" class="centered-block"><br>
-        <nav class="pure-g">
-            <div class="pure-u-1-5 centered-text medium-text" style="color: var(--yellow)"> Title </div>
-            <div class="pure-u-1-5 centered-text medium-text" style="color: var(--yellow)"> Language </div>
-            <div class="pure-u-1-5 centered-text medium-text" style="color: var(--yellow)"> Date </div>
-        </nav>
-    {% for post in posts %}
-        <nav class="pure-g">
-            <div class="pure-u-1-5 centered-text medium-text very-small-top-bottom-margin"> {{ post.title }} </div>
-            <div class="pure-u-1-5 centered-text medium-text very-small-top-bottom-margin"> {{ post.language }} </div>
-            <div class="pure-u-1-5 centered-text medium-text very-small-top-bottom-margin"> {{ post.date_created.date() }} </div>
-            <div class="pure-u-1-5 centered-text medium-text very-small-top-bottom-margin"> <a href="/update/{{post.id}}"> Edit </a> </div>
-            <div class="pure-u-1-5 centered-text medium-text very-small-top-bottom-margin"> <a href="/delete/{{post.id}}"> Delete </a> </div>
-        </nav>
-    {% endfor %}
+    <input type="submit" value="Post your code snippet!" class="centered-block" style="font-size: 1.5em">
 {% endblock %}
