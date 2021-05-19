@@ -1,11 +1,10 @@
-{% extends "code.html" %}
+{% extends "base.html" %}
 
-{% block main_header %}
+{% block body %}
     <h1>Code Snip is the ultimate platform for sharing and reviewing code snippets.</h1><br>
-{% endblock %}
-{% block form_action %}
-    action="/" method="post"
-{% endblock %}
-{% block button %}
-    <input type="submit" value="Post your code snippet!" class="centered-block" style="font-size: 1.5em">
+    <form action="/" method="post">
+    {% with action="/", submit_text = "Post your code snippet!" %}
+    {% include "code_input.html" %}
+    {% endwith %}
+    </form>
 {% endblock %}

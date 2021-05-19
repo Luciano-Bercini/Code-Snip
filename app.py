@@ -19,6 +19,7 @@ class Post(db.Model):
     def __repr__(self):
         return '<Post %r>' % self.id
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -34,6 +35,7 @@ def index():
             return 'There was an issue posting your task.'
     else:
         return render_template('index.html')
+
 
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
@@ -55,12 +57,11 @@ def update(id):
 def search():
     if request.method == 'POST':
         post_title = request.form['title']
-        if post_title:
-            posts = Post.query.filter(Post.title.contains(post_title)).all()
-        else:
-            posts = Post.query.all()
+        post_language = request.form['language']
+        posts = Post.query.filter(Post.title.contains(post_title), Post.language.ilike(post_language)) \
+            .order_by(Post.title.desc()).all()
     else:
-        posts = Post.query.order_by(Post.date_created).all()
+        posts = Post.query.order_by(Post.date_created.desc()).all()
     return render_template('/search.html', posts=posts)
 
 
@@ -74,6 +75,7 @@ def delete(id):
     except:
         return 'There was a problem deleting the task.'
 
+
 @app.route('/information')
 def information():
     return render_template('information.html')
@@ -82,6 +84,7 @@ def information():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

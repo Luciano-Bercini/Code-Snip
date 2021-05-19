@@ -1,16 +1,10 @@
-{% extends "code.html" %}
+{% extends "base.html" %}
 
-{% block main_header %} <h1> Editing your code snippet is always exciting. </h1><br> {% endblock %}
-
-{% block form_action %} action="/update/{{snippet.id}}" method="post" {% endblock %}
-
-{% block snippet_title_value %}value="{{ snippet.title }}"{% endblock %}
-
-{% block snippet_content_value %}{{ snippet.content }}{% endblock %}
-
-{% block snippet_language_selected %}
-    <option selected="selected" hidden>{{ snippet.language.capitalize() }}</option>
-{% endblock %}
-{% block button %}
-    <input type="submit" value="Update your code snippet!" class="centered-block" style="font-size: 1.5em">
+{% block body %}
+    <h1> Editing your code snippet is always exciting! </h1><br>
+    <form action="/update/{{snippet.id}}" method="post">
+    {% with title=snippet.title, content=snippet.content, language=snippet.language, submit_text="Update your code snippet!" %}
+    {% include "code_input.html" %}
+    {% endwith %}
+    </form>
 {% endblock %}
