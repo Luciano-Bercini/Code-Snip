@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1 style="color: var(--yellow)"> {{ snippet.title }} ({{ snippet.language }}) </h1>
+<p>
+    <pre>
+        <code class="centered-block" style="text-align: left; width: 80%">{{ snippet.content }}</code>
+    </pre>
+</p>
+<script src="https://unpkg.com/@highlightjs/cdn-assets@10.7.2/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+{% endblock %}

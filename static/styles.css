@@ -61,7 +61,7 @@ input[type=submit] {
 input[type=submit]:hover {
   background-color: var(--yellow_darker);
 }
-textarea, code, select {
+textarea, select {
   width: 80%;
   padding: 12px 20px;
   border: 1px solid #ccc;

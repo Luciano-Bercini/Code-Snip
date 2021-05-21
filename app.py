@@ -36,7 +36,6 @@ def index():
     else:
         return render_template('index.html')
 
-
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
     snippet_to_update = Post.query.get_or_404(id)
@@ -52,14 +51,25 @@ def update(id):
     else:
         return render_template('update.html', snippet=snippet_to_update)
 
+@app.route('/view/<int:id>')
+def view(id):
+    snippet_to_update = Post.query.get_or_404(id)
+    return render_template('view.html', snippet=snippet_to_update)
+
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
         post_title = request.form['title']
         post_language = request.form['language']
-        posts = Post.query.filter(Post.title.contains(post_title), Post.language.ilike(post_language)) \
-            .order_by(Post.title.desc()).all()
+        conditions = []
+        if not post_title:
+            conditions.append(Post.title.contains(post_title))
+        if post_language != 'Any':
+            conditions.append(Post.language.ilike(post_language))
+        posts = Post.query.filter(*conditions)\
+            .order_by(Post.title.desc())\
+            .all()
     else:
         posts = Post.query.order_by(Post.date_created.desc()).all()
     return render_template('/search.html', posts=posts)
