@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:sqlite:C:\Users\Admin\Documents\PycharmProjects\Test\test.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="test [2]" uuid="9073bd89-265a-4aab-b8cf-71434a5701ce">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Admin\Documents\PycharmProjects\Code Snip\test.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
