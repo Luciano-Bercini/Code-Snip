@@ -12,6 +12,9 @@ body {
     background-color: var(--black);
     color: var(--white);
 }
+.hidden {
+    visibility: hidden;
+}
 h1, h2 {
     text-align: center;
 }

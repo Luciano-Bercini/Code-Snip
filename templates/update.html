@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <h1> Editing your code snippet is always exciting! </h1><br>
-    <form action="/update/{{snippet.id}}" method="post">
+<h1> Editing your code snippet is always exciting! </h1><br>
+<form id="post" method="post">
     {% with title=snippet.title, content=snippet.content, language=snippet.language, submit_text="Update your code snippet!" %}
     {% include "code_input.html" %}
     {% endwith %}
-    </form>
+</form>
+<script src="{{ url_for('static', filename='update_snippet.js') }}"></script>
 {% endblock %}

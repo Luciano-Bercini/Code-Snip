@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <h1>Code Snip is the ultimate platform for sharing and reviewing code snippets.</h1><br>
-    <form action="/" method="post">
-    {% with action="/", submit_text = "Post your code snippet!" %}
+<h1>Code Snip is the ultimate platform for sharing and reviewing code snippets.</h1><br>
+<form id="post" method="post">
+    {% with language="C", action="/", submit_text="Post your code snippet!" %}
     {% include "code_input.html" %}
     {% endwith %}
-    </form>
+</form>
+<script src="{{ url_for('static', filename='post_snippet.js') }}"></script>
 {% endblock %}
