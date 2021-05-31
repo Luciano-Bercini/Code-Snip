@@ -1,45 +1,32 @@
 import logging
 from flask import Flask, render_template, request, redirect, jsonify, make_response, send_from_directory
 from datetime import *
-from dataclasses import dataclass
-from flask_sqlalchemy import *
-from flask_migrate import Migrate
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+import re
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-db = SQLAlchemy(app)
-migrate = Migrate(app, db, render_as_batch=True)
+
+client = MongoClient("mongodb://localhost:27017/")
+snipdb = client["snipdb"]
+db_snippet = snipdb["snippets"]
 
 
-@dataclass
-class Post(db.Model):
-    id: int
-    title: str
-    content: str
-    language: str
-    date_created: date
-
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50), nullable=False)
-    content = db.Column(db.String(500), nullable=False)
-    language = db.Column(db.String(50), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
 
 @app.route('/post_snippet', methods=['POST'])
 def post_snippet():
     title = request.form.get('title')
     content = request.form.get('content')
     language = request.form.get('language')
-
     post_validation = is_snippet_valid(title, content)
     if not post_validation[0]:
         return post_validation[1]
-
-    new_post = Post(title=title, content=content, language=language)
+    new_snippet = {"author": "None", "title": title, "content": content, "language": language, "date": datetime.now(timezone.utc)}
     try:
-        db.session.add(new_post)
-        db.session.commit()
+        db_snippet.insert_one(new_snippet)
         return "success"
     except Exception as e:
         logging.exception(e)
@@ -56,24 +43,18 @@ def is_snippet_valid(title, content):
     return True, "The post is valid!"
 
 
-
-@app.route('/', methods=['GET'])
-def index():
-    return render_template('index.html')
-
-
-@app.route('/update_snippet/<int:id>', methods=['GET', 'POST'])
+@app.route('/update_snippet/<string:id>', methods=['GET', 'POST'])
 def update_snippet(id):
-    snippet = Post.query.get_or_404(id)
+    snippet = db_snippet.find_one({"_id": ObjectId(id)})
     if request.method == 'POST':
-        snippet.title = request.form.get('title')
-        snippet.content = request.form.get('content')
-        snippet.language = request.form.get('language')
-        post_validation = is_snippet_valid(snippet.title, snippet.content)
+        title = request.form.get('title')
+        content = request.form.get('content')
+        language = request.form.get('language')
+        post_validation = is_snippet_valid(title, content)
         if not post_validation[0]:
             return post_validation[1]
         try:
-            db.session.commit()
+            db_snippet.update_one({"_id": ObjectId(id)}, {"$set": {"title": title, "content": content, "language": language}})
             return "success"
         except:
             return 'There was an issue updating your task.'
@@ -87,50 +68,45 @@ def sw():
     return response
 
 
-@app.route('/view/<int:id>')
+@app.route('/view/<string:id>')
 def view(id):
-    snippet = Post.query.get_or_404(id)
+    snippet = db_snippet.find_one({"_id": ObjectId(id)})
+    print(snippet)
     return render_template('view.html', snippet=snippet)
 
 
 @app.route('/render_query_table', methods=['GET'])
 def render_query_table():
-    post_title = request.args.get('title')
-    post_language = request.args.get('language')
-    conditions = []
-    conditions.append(Post.title.contains(post_title))
-    if post_language != 'Any':
-        conditions.append(Post.language.ilike(post_language))
-    posts = Post.query.filter(*conditions) \
-        .order_by(Post.title.desc()) \
-        .all()
-    return jsonify(render_template('query_table.html', posts=posts))
+    title = request.args.get('title')
+    language = request.args.get('language')
+    query = {"title": {"$regex": title, "$options": 'i'}}
+    if language != 'Any':
+        print(language)
+        query["language"] = language
+    snippets = db_snippet.find(query).sort("date", -1)
+    return render_template('query_table.html', posts=snippets)
 
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':
-        post_title = request.form['title']
-        post_language = request.form['language']
-        conditions = []
-        if not post_title:
-            conditions.append(Post.title.contains(post_title))
-        if post_language != 'Any':
-            conditions.append(Post.language.ilike(post_language))
-        posts = Post.query.filter(*conditions) \
-            .order_by(Post.title.desc()) \
-            .all()
+        title = request.form['title']
+        language = request.form['language']
+        query = {}
+        if not title:
+            query["title"] = {"$regex": title, "$options": 'i'}
+        if not language:
+            query["language"] = {"$regex": language, "$options": 'i'}
+        snippets = db_snippet.find(query).sort("date", -1)
     else:
-        posts = Post.query.order_by(Post.date_created.desc()).all()
-    return render_template('/search.html', posts=posts)
+        snippets = db_snippet.find().sort("date", -1)
+    return render_template('/search.html', posts=snippets)
 
 
-@app.route('/delete/<int:id>')
+@app.route('/delete/<string:id>')
 def delete(id):
-    task_to_delete = Post.query.get_or_404(id)
     try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
+        db_snippet.delete_one({"_id": ObjectId(id)})
         return redirect('/search')
     except:
         return 'There was a problem deleting the task.'
