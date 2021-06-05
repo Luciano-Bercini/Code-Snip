@@ -64,6 +64,18 @@ input[type=submit] {
 input[type=submit]:hover {
   background-color: var(--yellow_darker);
 }
+.pure-table {
+    border: 3px solid var(--white)
+}
+.pure-table thead {
+    background-color: transparent;
+    border: 3px solid var(--white);
+    color: var(--yellow);
+}
+.pure-table th, .pure-table tr, .pure-table td {
+    border-left: 3px solid var(--white);
+    border-right: 3px solid var(--white);
+}
 textarea, select {
   width: 80%;
   padding: 12px 20px;
@@ -72,8 +84,14 @@ textarea, select {
   outline-color: var(--yellow);
   box-sizing: border-box;
 }
+label {
+    letter-spacing: normal;
+}
 .centered {
   justify-content: center;
+}
+.stretch{
+  width:100%;
 }
 /*#editor {
   color: transparent;

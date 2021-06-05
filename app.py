@@ -1,30 +1,71 @@
-import logging
-from flask import Flask, render_template, request, redirect, jsonify, make_response, send_from_directory
+from flask import Flask, render_template, request, redirect, make_response, send_from_directory, session
 from datetime import *
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-import re
+import logging
+import bcrypt
 
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = 'pinsedocodesnip'
 client = MongoClient("mongodb://localhost:27017/")
 snipdb = client["snipdb"]
 db_snippet = snipdb["snippets"]
+db_users = snipdb["users"]
 
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    if 'username' in session:
+        return render_template('index.html', username=session['username'])
+    return redirect('/sign_in')
+
+@app.route('/profile', methods=['GET'])
+def profile():
+    if 'username' in session:
+        return render_template('profile.html', username=session['username'])
+
+
+@app.route("/sign_in", methods=['GET', 'POST'])
+def sign_in():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        login_user = db_users.find_one({'username': username})
+        if login_user:
+            if bcrypt.checkpw(password.encode('utf-8'), login_user['password']):
+                session['username'] = username
+                return redirect('/')
+        return 'Invalid username/password combination'
+    return render_template('sign_in.html')
+
+
+@app.route("/sign_up", methods=['GET', 'POST'])
+def sign_up():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        existing_user = db_users.find_one({'username': username})
+        if not existing_user:
+            hashed_pass = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            db_users.insert_one({'username': username, 'password': hashed_pass})
+            session['username'] = username
+            return redirect('/')
+        return 'Username already exists!'
+    return render_template('sign_up.html')
+
 
 @app.route('/post_snippet', methods=['POST'])
 def post_snippet():
     title = request.form.get('title')
     content = request.form.get('content')
     language = request.form.get('language')
+    author = 'Anonymous'
+    if 'username' in session:
+        author = session['username']
     post_validation = is_snippet_valid(title, content)
     if not post_validation[0]:
         return post_validation[1]
-    new_snippet = {"author": "None", "title": title, "content": content, "language": language, "date": datetime.now(timezone.utc)}
+    new_snippet = {"author": author, "title": title, "content": content, "language": language, "date": datetime.now(timezone.utc)}
     try:
         db_snippet.insert_one(new_snippet)
         return "success"
@@ -81,10 +122,22 @@ def render_query_table():
     language = request.args.get('language')
     query = {"title": {"$regex": title, "$options": 'i'}}
     if language != 'Any':
-        print(language)
         query["language"] = language
-    snippets = db_snippet.find(query).sort("date", -1)
-    return render_template('query_table.html', posts=snippets)
+    snippets = list(db_snippet.find(query, {'content': 0}).sort("date", -1))
+    # Modify for correct data representation.
+    for snippet in snippets:
+        snippet['date'] = snippet['date'].strftime('%d %b %Y')
+    return render_template('snippets_table.html', snippets=snippets)
+
+
+@app.route('/render_user_snippets_table', methods=['GET'])
+def render_user_snippets_table():
+    query = {"author": session['username']}
+    snippets = list(db_snippet.find(query, {'content': 0, 'author': 0}).sort("date", -1))
+    # Modify for correct data representation.
+    for snippet in snippets:
+        snippet['date'] = snippet['date'].strftime('%d %b %Y')
+    return render_template('snippets_table.html', snippets=snippets, username=session['username'])
 
 
 @app.route('/search', methods=['GET', 'POST'])

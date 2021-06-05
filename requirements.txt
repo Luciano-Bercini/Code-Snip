@@ -1,4 +1,8 @@
-flask
+flask~=2.0.0
 flask-sqlalchemy
-pymongo
+pymongo~=3.11.4
 Flask-Migrate
+Flask-Login
+Flask-Bcrypt
+bcrypt~=3.2.0
+alembic~=1.6.2
