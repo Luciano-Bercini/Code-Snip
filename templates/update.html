@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block body %}
-<h1> Editing your code snippet is always exciting! </h1><br>
+<h1> Editing your code snippet is always exciting! </h1>
 <form id="post" method="post">
     {% with title=snippet.title, content=snippet.content, language=snippet.language, submit_text="Update your code snippet!" %}
     {% include "code_input.html" %}

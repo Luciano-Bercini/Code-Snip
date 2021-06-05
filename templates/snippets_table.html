@@ -1,4 +1,4 @@
-<div class="centered-block" style="width: 90%">
+<div class="centered-block" style="width: 95%">
     <table class="pure-table stretch medium-text very-small-top-bottom-margin">
     <thead>
         <tr>
@@ -6,7 +6,7 @@
                 {% for key, value in snippets[0].items() %}
                     {% if key != '_id' %}
                     <th>{{key.capitalize()}}</th>
-                    {% endif %}}
+                    {% endif %}
                 {% endfor %}
             <th>View</th>
                 {% if username %}
@@ -24,13 +24,13 @@
                     <td>{{value}}</td>
                     {% endif %}
                 {% endfor %}
-                <td><a href='/view/{{snippet._id}}'>View</a></td>
+                <td><a href="{{ url_for('view_snippet', id=snippet._id) }}">View</a></td>
                 {% if username %}
-                <td><a href="{{ url_for('update_snippet', id=id) }}">Update</a></td>
-                <td><a href='/delete/{{snippet._id}}'>Delete</a></td>
+                <td><a href="{{ url_for('update_snippet', id=snippet._id) }}">Update</a></td>
+                <td><a href="{{ url_for('delete_snippet', id=snippet._id) }}">Delete</a></td>
                 {% endif %}
             </tr>
         {% endfor %}
     </tbody>
-</table>
+    </table>
 </div>

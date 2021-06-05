@@ -8,6 +8,8 @@
     --red: #c20b0b;
 }
 body {
+    margin: 0;
+    height: 100%;
     font-family: serif;
     background-color: var(--black);
     color: var(--white);
@@ -93,6 +95,20 @@ label {
 .stretch{
   width:100%;
 }
+.footer-wrap {
+  min-height: 100%;
+  margin-bottom: -50px;
+}
+.footer {
+    background-color: var(--black);
+    border-color: var(--yellow);
+    border-top: 3px solid var(--yellow_darker);
+    position: fixed;
+    z-index: 1000 !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
 /*#editor {
   color: transparent;
   background: transparent;
@@ -120,8 +136,11 @@ label {
 }
 */
 a {
-    text-decoration: none;
+    text-decoration: underline;
     color: var(--white);
+}
+.no-decoration {
+    text-decoration: none;
 }
 a:hover {
     color: var(--yellow);

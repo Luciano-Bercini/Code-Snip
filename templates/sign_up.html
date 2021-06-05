@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
 
-{% block head %}
-
-{% endblock %}
-
 {% block body %}
 <h1>Join an ever growing community of developers!</h1>
     <form id="sign_up" method="post" style="margin-top: 5%">
@@ -14,7 +10,7 @@
         </div>
         <label style="color: var(--yellow)">Password</label>
         <div class="pure-u-1 pure-u-md-4-1">
-            <input type="text" name="password" id="password" class="post-content centered-block" placeholder="Password..."/>
+            <input type="password" name="password" id="password" class="post-content centered-block" placeholder="Password..."/>
         </div>
         <div class="pure-u-1 pure-u-md-4-1">
             <input type="submit" class="centered-block post-content" value="Register"/>

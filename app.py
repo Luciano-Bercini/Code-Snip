@@ -23,20 +23,7 @@ def index():
 def profile():
     if 'username' in session:
         return render_template('profile.html', username=session['username'])
-
-
-@app.route("/sign_in", methods=['GET', 'POST'])
-def sign_in():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        login_user = db_users.find_one({'username': username})
-        if login_user:
-            if bcrypt.checkpw(password.encode('utf-8'), login_user['password']):
-                session['username'] = username
-                return redirect('/')
-        return 'Invalid username/password combination'
-    return render_template('sign_in.html')
+    return redirect('/sign_in')
 
 
 @app.route("/sign_up", methods=['GET', 'POST'])
@@ -52,6 +39,24 @@ def sign_up():
             return redirect('/')
         return 'Username already exists!'
     return render_template('sign_up.html')
+
+@app.route("/sign_in", methods=['GET', 'POST'])
+def sign_in():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        login_user = db_users.find_one({'username': username})
+        if login_user:
+            if bcrypt.checkpw(password.encode('utf-8'), login_user['password']):
+                session['username'] = username
+                return redirect('/')
+        return 'Invalid username/password combination'
+    return render_template('sign_in.html')
+
+@app.route('/sign_out', methods=['GET', 'POST'])
+def sign_out():
+    session.pop('username')
+    return redirect('/search')
 
 
 @app.route('/post_snippet', methods=['POST'])
@@ -109,8 +114,8 @@ def sw():
     return response
 
 
-@app.route('/view/<string:id>')
-def view(id):
+@app.route('/view_snippet/<string:id>')
+def view_snippet(id):
     snippet = db_snippet.find_one({"_id": ObjectId(id)})
     print(snippet)
     return render_template('view.html', snippet=snippet)
@@ -123,7 +128,7 @@ def render_query_table():
     query = {"title": {"$regex": title, "$options": 'i'}}
     if language != 'Any':
         query["language"] = language
-    snippets = list(db_snippet.find(query, {'content': 0}).sort("date", -1))
+    snippets = list(db_snippet.find(query, {'content': 0}).sort('date', -1))
     # Modify for correct data representation.
     for snippet in snippets:
         snippet['date'] = snippet['date'].strftime('%d %b %Y')
@@ -133,7 +138,7 @@ def render_query_table():
 @app.route('/render_user_snippets_table', methods=['GET'])
 def render_user_snippets_table():
     query = {"author": session['username']}
-    snippets = list(db_snippet.find(query, {'content': 0, 'author': 0}).sort("date", -1))
+    snippets = list(db_snippet.find(query, {'content': 0, 'author': 0}).sort('date', -1))
     # Modify for correct data representation.
     for snippet in snippets:
         snippet['date'] = snippet['date'].strftime('%d %b %Y')
@@ -156,11 +161,11 @@ def search():
     return render_template('/search.html', posts=snippets)
 
 
-@app.route('/delete/<string:id>')
-def delete(id):
+@app.route('/delete_snippet/<string:id>')
+def delete_snippet(id):
     try:
         db_snippet.delete_one({"_id": ObjectId(id)})
-        return redirect('/search')
+        return redirect('/profile')
     except:
         return 'There was a problem deleting the task.'
 

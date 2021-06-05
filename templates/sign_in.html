@@ -1,11 +1,7 @@
 {% extends 'base.html' %}
 
-{% block head %}
-
-{% endblock %}
-
 {% block body %}
-<h1>To view, edit and delete your snippets, make sure to sign in!</h1>
+<h1>To post, edit and delete your code snippets, make sure to sign in!</h1>
     <form id="sign_in" method="post" style="margin-top: 5%">
         <div class="pure-g centered-block centered-text" style="width: 50%">
             <label class="centered-text" style="color: var(--yellow);">Username</label>
@@ -14,7 +10,7 @@
         </div>
         <label style="color: var(--yellow)">Password</label>
         <div class="pure-u-1 pure-u-md-4-1">
-            <input type="text" name="password" id="password" class="post-content centered-block" placeholder="Password..."/>
+            <input type="password" name="password" id="password" class="post-content centered-block" placeholder="Password..."/>
         </div>
         <div class="pure-u-1 pure-u-md-4-1">
             <input type="submit" class="centered-block post-content" value="Sign in"/>
