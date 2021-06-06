@@ -17,6 +17,9 @@ body {
 .hidden {
     visibility: hidden;
 }
+h1 {
+    font-size: 1.8em;
+}
 h1, h2 {
     text-align: center;
 }
@@ -81,7 +84,7 @@ input[type=submit]:hover {
 textarea, select {
   width: 80%;
   padding: 12px 20px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--white);
   border-radius: 4px;
   outline-color: var(--yellow);
   box-sizing: border-box;
@@ -109,32 +112,12 @@ label {
     right: 0;
     bottom: 0;
 }
-/*#editor {
-  color: transparent;
-  background: transparent;
-  caret-color: var(--white);
-      z-index: 1;
+code {
+    text-align: left;
+    width: 80%;
+    border: 3px solid var(--yellow_darker);
+    font-size: 0.9em
 }
-#highlight {
-  z-index: 0;
-}
-#editor, #highlight {
-  margin: 10px;
-  padding: 10px;
-  border: 0;
-  width: calc(100% - 32px);
-  height: 150px;
-  position: absolute;
-  top: 50%;
-  left: 0;
-}
-#editor, #highlight, #highlight * {
-  // Also add text styles to highlighting tokens.
-  font-size: 15pt;
-  font-family: monospace;
-  line-height: 20pt;
-}
-*/
 a {
     text-decoration: underline;
     color: var(--white);

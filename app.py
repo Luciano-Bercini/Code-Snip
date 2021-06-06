@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request, redirect, make_response, send_from_directory, session
-from datetime import *
+from datetime import datetime
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import logging
 import bcrypt
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'pinsedocodesnip'
+app.config['SECRET_KEY'] = '364S1947RO713085892N7LO'
 client = MongoClient("mongodb://localhost:27017/")
 snipdb = client["snipdb"]
 db_snippet = snipdb["snippets"]
@@ -18,6 +18,7 @@ def index():
     if 'username' in session:
         return render_template('index.html', username=session['username'])
     return redirect('/sign_in')
+
 
 @app.route('/profile', methods=['GET'])
 def profile():
@@ -52,6 +53,7 @@ def sign_in():
                 return redirect('/')
         return 'Invalid username/password combination'
     return render_template('sign_in.html')
+
 
 @app.route('/sign_out', methods=['GET', 'POST'])
 def sign_out():
