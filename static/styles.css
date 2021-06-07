@@ -49,7 +49,7 @@ h1, h2 {
   margin-left: auto;
   margin-right: auto;
 }
-input, select {
+input, select, button {
   width: 80%;
   padding: 12px 20px;
   border: none;
@@ -114,9 +114,8 @@ label {
 }
 code {
     text-align: left;
-    width: 80%;
     border: 3px solid var(--yellow_darker);
-    font-size: 0.9em
+    font-size: 0.9em;
 }
 a {
     text-decoration: underline;
@@ -128,3 +127,33 @@ a {
 a:hover {
     color: var(--yellow);
 }
+
+/****** Style Star Rating Widget *****/
+.rating {
+  border: none;
+  margin:16px;
+  float: left;
+}
+.rating > input {
+    display: none;
+}
+.rating > label:before {
+  margin: 5px;
+  font-size: 1.25em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
+.rating > label {
+  color: #ddd;
+  float: right;
+}
+/***** CSS to highlight stars on hover *****/
+/* Reminder that + is for next sibling while ~ is for previous ones */
+.rating > input:checked ~ label, /* show gold star when clicked */
+.rating:not(:checked) > label:hover, /* hover current star */
+.rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+.rating > input:checked + label:hover, /* hover current star when changing rating */
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+.rating > input:checked ~ label:hover ~ label { color: #FFED85;  }

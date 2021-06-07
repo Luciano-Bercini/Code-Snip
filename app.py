@@ -41,6 +41,7 @@ def sign_up():
         return 'Username already exists!'
     return render_template('sign_up.html')
 
+
 @app.route("/sign_in", methods=['GET', 'POST'])
 def sign_in():
     if request.method == 'POST':
@@ -119,8 +120,29 @@ def sw():
 @app.route('/view_snippet/<string:id>')
 def view_snippet(id):
     snippet = db_snippet.find_one({"_id": ObjectId(id)})
-    print(snippet)
     return render_template('view.html', snippet=snippet)
+
+
+@app.route('/view_snippet/<string:id>/rate_snippet', methods=['POST'])
+def rate_snippet(id):
+    if 'username' not in session:
+        return "You have to sign-in in order to review my friend!"
+    rating = int(request.form.get('rating'))
+    username = session['username']
+    if rating > 5:
+        return "Too high!"
+    if rating < 1:
+        return "Too low!"
+    rate = {'username': session["username"], 'rating': rating}
+    snippet = db_snippet.find_one({"_id": ObjectId(id)})
+    has_rated = db_snippet.find_one({"_id": ObjectId(id), "ratings.username": username})
+    if has_rated:
+        db_snippet.update_one({"_id": ObjectId(id), "ratings.username": username}, {"$set": {"ratings.$.rating": rating}})
+    else:
+        db_snippet.update_one({"_id": ObjectId(id)}, {"$push": {"ratings": rate}})
+    x = db_snippet.find_one({"_id": ObjectId(id)})
+    print(x['ratings'])
+    return "Success"
 
 
 @app.route('/render_query_table', methods=['GET'])
@@ -134,6 +156,16 @@ def render_query_table():
     # Modify for correct data representation.
     for snippet in snippets:
         snippet['date'] = snippet['date'].strftime('%d %b %Y')
+        snippet['average'] = 'N/A'  # By default 0
+        if 'ratings' in snippet:
+            sum = 0
+            users_rated = 0
+            for rating in snippet['ratings']:
+                users_rated = users_rated + 1
+                sum = rating['rating']
+            snippet['average'] = sum // users_rated
+            print(snippet['average'])
+            snippet.pop('ratings') # Remove from the snippet.
     return render_template('snippets_table.html', snippets=snippets)
 
 
