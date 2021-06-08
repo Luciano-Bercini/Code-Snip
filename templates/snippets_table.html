@@ -20,8 +20,20 @@
         {% for snippet in snippets %}
             <tr class="stretch">
                 {% for key, value in snippet.items() %}
-                    {% if key != '_id' %}
-                    <td>{{value}}</td>
+                    {% if key == 'average' %}
+                        {% set full_stars = value %}
+                        {% set empty_stars = 5 - full_stars %}
+                        <td>
+                        {% for i in range(5) %}
+                            {% if i < full_stars %}
+                            <label class="full-star"></label>
+                            {% else %}
+                            <label class="empty-star"></label>
+                            {% endif %}
+                        {% endfor %}
+                        </td>
+                    {% elif key != '_id' %}
+                        <td>{{value}}</td>
                     {% endif %}
                 {% endfor %}
                 <td><a href="{{ url_for('view_snippet', id=snippet._id) }}">View</a></td>

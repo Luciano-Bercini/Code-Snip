@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, make_response, send_from_directory, session
-from datetime import datetime
+from datetime import datetime, timezone
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import logging
@@ -15,9 +15,7 @@ db_users = snipdb["users"]
 
 @app.route('/', methods=['GET'])
 def index():
-    if 'username' in session:
-        return render_template('index.html', username=session['username'])
-    return redirect('/sign_in')
+    return render_template('index.html')
 
 
 @app.route('/profile', methods=['GET'])
@@ -111,9 +109,10 @@ def update_snippet(id):
         return render_template('update.html', snippet=snippet)
 
 
-@app.route('/sw.js')
+@app.route('/sw.js', methods=['GET'])
 def sw():
     response = make_response(send_from_directory('static', 'sw.js'))
+    response.headers['Content-Type'] = 'application/javascript'
     return response
 
 
@@ -126,23 +125,20 @@ def view_snippet(id):
 @app.route('/view_snippet/<string:id>/rate_snippet', methods=['POST'])
 def rate_snippet(id):
     if 'username' not in session:
-        return "You have to sign-in in order to review my friend!"
+        return 'Sign in has failed', -1
     rating = int(request.form.get('rating'))
     username = session['username']
     if rating > 5:
-        return "Too high!"
+        return "Too high", 0
     if rating < 1:
-        return "Too low!"
+        return "Too low", 0
     rate = {'username': session["username"], 'rating': rating}
-    snippet = db_snippet.find_one({"_id": ObjectId(id)})
     has_rated = db_snippet.find_one({"_id": ObjectId(id), "ratings.username": username})
     if has_rated:
         db_snippet.update_one({"_id": ObjectId(id), "ratings.username": username}, {"$set": {"ratings.$.rating": rating}})
     else:
         db_snippet.update_one({"_id": ObjectId(id)}, {"$push": {"ratings": rate}})
-    x = db_snippet.find_one({"_id": ObjectId(id)})
-    print(x['ratings'])
-    return "Success"
+    return "Success", 1
 
 
 @app.route('/render_query_table', methods=['GET'])
@@ -153,19 +149,7 @@ def render_query_table():
     if language != 'Any':
         query["language"] = language
     snippets = list(db_snippet.find(query, {'content': 0}).sort('date', -1))
-    # Modify for correct data representation.
-    for snippet in snippets:
-        snippet['date'] = snippet['date'].strftime('%d %b %Y')
-        snippet['average'] = 'N/A'  # By default 0
-        if 'ratings' in snippet:
-            sum = 0
-            users_rated = 0
-            for rating in snippet['ratings']:
-                users_rated = users_rated + 1
-                sum = rating['rating']
-            snippet['average'] = sum // users_rated
-            print(snippet['average'])
-            snippet.pop('ratings') # Remove from the snippet.
+    correct_representation_snippets(snippets)
     return render_template('snippets_table.html', snippets=snippets)
 
 
@@ -173,10 +157,20 @@ def render_query_table():
 def render_user_snippets_table():
     query = {"author": session['username']}
     snippets = list(db_snippet.find(query, {'content': 0, 'author': 0}).sort('date', -1))
-    # Modify for correct data representation.
+    correct_representation_snippets(snippets)
+    return render_template('snippets_table.html', snippets=snippets, username=session['username'])
+
+
+def correct_representation_snippets(snippets):
     for snippet in snippets:
         snippet['date'] = snippet['date'].strftime('%d %b %Y')
-    return render_template('snippets_table.html', snippets=snippets, username=session['username'])
+        snippet['average'] = 0  # By default 0.
+        if 'ratings' in snippet:
+            sum_ratings = 0
+            for rating in snippet['ratings']:
+                sum_ratings += rating['rating']
+            snippet['average'] = sum_ratings // len(snippet['ratings'])
+            snippet.pop('ratings')  # Remove the ratings from the snippet view.
 
 
 @app.route('/search', methods=['GET', 'POST'])

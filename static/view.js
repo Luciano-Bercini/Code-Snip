@@ -15,12 +15,15 @@ function rate(value) {
             rating: value
     },
     success: (result) => {
-        if (result === "Success") {
+        console.log(result);
+            /*
+        if (result === "success") {
             alert("Thanks for reviewing " + value + " stars!");
         }
+        else if (result === )
         else {
-            alert(result);
-        }
+            alert("Error reviewing the snippet!");
+        }*/
     },
     error: function(error) {
         console.log("Here is the error res: " + JSON.stringify(error));
