@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, make_response, send_from_directory, session
+from flask import Flask, render_template, request, redirect, make_response, send_from_directory, session, jsonify
 from datetime import datetime, timezone
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -119,26 +119,36 @@ def sw():
 @app.route('/view_snippet/<string:id>')
 def view_snippet(id):
     snippet = db_snippet.find_one({"_id": ObjectId(id)})
-    return render_template('view.html', snippet=snippet)
+    ratings = db_snippet.find_one({"_id": ObjectId(id)})['ratings']
+    # Only consider reviews (the ones with text basically).
+    reviews = []
+    for rating in ratings:
+        if 'review' in rating:
+            reviews.append(rating)
+    logged_in = False
+    if 'username' in session:
+        logged_in = True
+    return render_template('view.html', logged=logged_in, snippet=snippet, reviews=reviews)
 
 
 @app.route('/view_snippet/<string:id>/rate_snippet', methods=['POST'])
-def rate_snippet(id):
+def review_snippet(id):
     if 'username' not in session:
-        return 'Sign in has failed', -1
+        return jsonify('Sign in is required to review!'), 400
     rating = int(request.form.get('rating'))
-    username = session['username']
-    if rating > 5:
-        return "Too high", 0
+    review = request.form.get('review')
     if rating < 1:
-        return "Too low", 0
-    rate = {'username': session["username"], 'rating': rating}
+        return jsonify('You must rate the code before posting!'), 400
+    username = session['username']
+    if rating < 1 or rating > 5:
+        return jsonify('Invalid input.'), 400
+    rate = {'username': session["username"], 'rating': rating, 'review': review}
     has_rated = db_snippet.find_one({"_id": ObjectId(id), "ratings.username": username})
     if has_rated:
-        db_snippet.update_one({"_id": ObjectId(id), "ratings.username": username}, {"$set": {"ratings.$.rating": rating}})
+        db_snippet.update_one({"_id": ObjectId(id), "ratings.username": username}, {"$set": {"ratings.$.rating": rating, "ratings.$.review": review}})
     else:
         db_snippet.update_one({"_id": ObjectId(id)}, {"$push": {"ratings": rate}})
-    return "Success", 1
+    return jsonify('Thank you for the review!'), 200
 
 
 @app.route('/render_query_table', methods=['GET'])

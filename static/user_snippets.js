@@ -14,7 +14,7 @@ function renderQueryTableInElement(jQueryTableIndex) {
             $(jQueryTableIndex).empty().append(data);
         },
         error: function(error) {
-            console.log("Here is the error res: " + JSON.stringify(error));
+            console.log("Error: " + JSON.stringify(error));
         }
     })
 }

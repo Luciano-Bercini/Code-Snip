@@ -31,7 +31,7 @@ $(document).ready(function () {
         }
     },
     error: function(error) {
-        console.log("Here is the error res: " + JSON.stringify(error));
+        console.log("Error: " + JSON.stringify(error));
         }
     })
     });

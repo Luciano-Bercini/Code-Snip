@@ -23,6 +23,9 @@ h1 {
 h1, h2 {
     text-align: center;
 }
+.yellow-text {
+    color: var(--yellow);
+}
 .centered-text {
     text-align: center;
     align-self: center;
@@ -88,6 +91,7 @@ textarea, select {
   border-radius: 4px;
   outline-color: var(--yellow);
   box-sizing: border-box;
+  margin:1em;
 }
 label {
     letter-spacing: normal;
@@ -143,15 +147,15 @@ a:hover {
 }
 .rating {
   border: none;
-  margin:16px;
+  margin:1em;
   float: left;
 }
 .rating > input {
     display: none;
 }
 .rating > label:before {
-  margin: 5px;
-  font-size: 1.5em;
+  margin-right: 10px;
+  font-size: 2em;
   font-family: FontAwesome;
   display: inline-block;
   content: "\f005";

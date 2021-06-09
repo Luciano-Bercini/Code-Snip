@@ -1,32 +1,26 @@
 hljs.highlightAll();
-bindClickToRate();
+trackRatingValue();
 
-function bindClickToRate() {
+let ratingValue = 0;
+
+function trackRatingValue() {
     $(".rating input:radio").click(() => {
-        let radioValue = $(":checked").val();
-        rate(radioValue);
+        ratingValue = $(":checked").val();
     })
 }
-function rate(value) {
+function review() {
      $.ajax({
         type: 'POST',
         url: window.location.href + '/rate_snippet',
         data: {
-            rating: value
+            rating: ratingValue,
+            review: $("#review").val()
     },
     success: (result) => {
-        console.log(result);
-            /*
-        if (result === "success") {
-            alert("Thanks for reviewing " + value + " stars!");
-        }
-        else if (result === )
-        else {
-            alert("Error reviewing the snippet!");
-        }*/
+           alert(result);
     },
-    error: function(error) {
-        console.log("Here is the error res: " + JSON.stringify(error));
+    error: function(request) {
+           alert(request.responseJSON);
         }
     });
 }
