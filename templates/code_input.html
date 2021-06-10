@@ -1,7 +1,7 @@
 <h3 class="centered-text medium-text very-small-top-bottom-margin" style="color: var(--yellow)">TITLE</h3>
 <input type="text" name="title" id="title" placeholder="Your title..." spellcheck="false" required class="centered-block post-content" value="{{ title }}">
 <h3 class="centered-text medium-text very-small-top-bottom-margin" style="color: var(--yellow)">CONTENT</h3>
-<textarea id="content" name="content" spellcheck="false" placeholder="Your code..." rows="12" required class="centered-block post-content">{{ content }}</textarea>
+<textarea id="content" name="content" spellcheck="false" placeholder="Your code..." rows="10" required class="centered-block post-content">{{ content }}</textarea>
 <h3 class="centered-text medium-text very-small-top-bottom-margin" style="color: var(--yellow)">LANGUAGE</h3>
 <select name="language" id="language" class="centered-block post-content">{% include "language_options.html" %}</select>
 <input type="submit" value="{{ submit_text }}" class="centered-block" style="font-size: 1.5em">
