@@ -15,7 +15,10 @@ db_users = snipdb["users"]
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    username = 'Anonymous'
+    if 'username' in session:
+        username = session['username']
+    return render_template('index.html', username=username)
 
 
 @app.route('/profile', methods=['GET'])
@@ -35,7 +38,7 @@ def sign_up():
             hashed_pass = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             db_users.insert_one({'username': username, 'password': hashed_pass})
             session['username'] = username
-            return redirect('/')
+            return redirect('/profile')
         return 'Username already exists!'
     return render_template('sign_up.html')
 
@@ -49,7 +52,7 @@ def sign_in():
         if login_user:
             if bcrypt.checkpw(password.encode('utf-8'), login_user['password']):
                 session['username'] = username
-                return redirect('/')
+                return redirect('/profile')
         return 'Invalid username/password combination'
     return render_template('sign_in.html')
 
@@ -57,7 +60,7 @@ def sign_in():
 @app.route('/sign_out', methods=['GET', 'POST'])
 def sign_out():
     session.pop('username')
-    return redirect('/search')
+    return redirect('/profile')
 
 
 @app.route('/post_snippet', methods=['POST'])
@@ -119,19 +122,29 @@ def sw():
 @app.route('/view_snippet/<string:id>')
 def view_snippet(id):
     snippet = db_snippet.find_one({"_id": ObjectId(id)})
-    ratings = db_snippet.find_one({"_id": ObjectId(id)})['ratings']
-    # Only consider reviews (the ones with text basically).
     reviews = []
-    for rating in ratings:
-        if 'review' in rating:
-            reviews.append(rating)
+    if 'ratings' in snippet:
+        # Only consider reviews (the ones with text basically).
+        for rating in snippet['ratings']:
+            if 'review' in rating:
+                reviews.append(rating)
     logged_in = False
     if 'username' in session:
         logged_in = True
-    return render_template('view.html', logged=logged_in, snippet=snippet, reviews=reviews)
+    return render_template('view.html', logged_in=logged_in, snippet=snippet, reviews_render=render_reviews(snippet))
 
 
-@app.route('/view_snippet/<string:id>/rate_snippet', methods=['POST'])
+def render_reviews(snippet):
+    reviews = []
+    if 'ratings' in snippet:
+        # Only consider reviews (the ones with text basically).
+        for rating in snippet['ratings']:
+            if 'review' in rating:
+                reviews.append(rating)
+    return render_template('reviews.html', reviews=reviews)
+
+
+@app.route('/view_snippet/<string:id>/review_snippet', methods=['POST'])
 def review_snippet(id):
     if 'username' not in session:
         return jsonify('Sign in is required to review!'), 400
@@ -148,7 +161,8 @@ def review_snippet(id):
         db_snippet.update_one({"_id": ObjectId(id), "ratings.username": username}, {"$set": {"ratings.$.rating": rating, "ratings.$.review": review}})
     else:
         db_snippet.update_one({"_id": ObjectId(id)}, {"$push": {"ratings": rate}})
-    return jsonify('Thank you for the review!'), 200
+    snippet = db_snippet.find_one({"_id": ObjectId(id)})
+    return jsonify(render_reviews(snippet)), 200
 
 
 @app.route('/render_query_table', methods=['GET'])

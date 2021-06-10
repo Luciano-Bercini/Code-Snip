@@ -1,0 +1,24 @@
+<h1 class="yellow-text">Other reviews</h1>
+{% if reviews|length == 0 %}
+<h2>
+  ...What a void!
+  Looks like no one posted a review yet!
+</h2>
+{% endif %}
+<div class="centered-block" style="width: 80%">
+  {% for rating in reviews %}
+      <h1><i>{{rating.username}}</i></h1>
+      <div class="centered-block" style="width: 95px">
+      {% set full_stars = rating.rating %}
+      {% set empty_stars = 5 - full_stars %}
+      {% for i in range(5) %}
+          {% if i < full_stars %}
+          <label class="full-star"></label>
+          {% else %}
+          <label class="empty-star"></label>
+          {% endif %}
+      {% endfor %}
+      </div><br>
+      <textarea rows="3" disabled class="centered-block">{{rating.review}}</textarea>
+  {% endfor %}
+</div><br>

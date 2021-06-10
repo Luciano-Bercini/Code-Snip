@@ -8,16 +8,17 @@ function trackRatingValue() {
         ratingValue = $(":checked").val();
     })
 }
+
 function review() {
      $.ajax({
         type: 'POST',
-        url: window.location.href + '/rate_snippet',
+        url: window.location.href + '/review_snippet',
         data: {
             rating: ratingValue,
             review: $("#review").val()
     },
     success: (result) => {
-           alert(result);
+           $('#other_reviews').empty().append(result);
     },
     error: function(request) {
            alert(request.responseJSON);

@@ -5,7 +5,7 @@
     --yellow:#FFD60C;
     --yellow_darker: #e5bf00;
     --white:#FDF8F5;
-    --red: #c20b0b;
+    --red: #e00a0a;
 }
 body {
     margin: 0;
@@ -25,6 +25,9 @@ h1, h2 {
 }
 .yellow-text {
     color: var(--yellow);
+}
+.red-text {
+    color:var(--red);
 }
 .centered-text {
     text-align: center;

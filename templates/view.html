@@ -13,52 +13,29 @@
         <code style="max-height: 30vh">{{ snippet.content }}</code>
     </pre>
 </div>
-    <button onclick="copyToClipboard()" class="centered-block">Copy to clipboard</button>
-    <h2>{{username}}</h2>
-    {% if logged_in %}
-    <h1 class="yellow-text">Your review</h1>
-    <textarea id="review" name="review" placeholder="Your review..." rows="6" required class="centered-block post-content"></textarea>
-    <div class="pure-g centered-block" style="width: 80%;">
-        <div class="pure-u-1-2">
-            <fieldset class="rating">
-                <input type="radio" id="star5" name="rating" value="5"/><label for="star5"></label>
-                <input type="radio" id="star4" name="rating" value="4"/><label for="star4"></label>
-                <input type="radio" id="star3" name="rating" value="3"/><label for="star3"></label>
-                <input type="radio" id="star2" name="rating" value="2"/><label for="star2"></label>
-                <input type="radio" id="star1" name="rating" value="1"/><label for="star1"></label>
-            </fieldset>
-        </div>
-        <div class="pure-u-1-2 very-small-top-bottom-margin">
-            <button style="float:right" onclick="review()">Post Review</button>
-        </div>
+<button onclick="copyToClipboard()" class="centered-block">Copy to clipboard</button>
+<h2>{{username}}</h2>
+{% if logged_in %}
+<h1 class="yellow-text">Review</h1>
+<textarea id="review" name="review" placeholder="Your review..." rows="6" required class="centered-block post-content"></textarea>
+<div class="pure-g centered-block" style="width: 80%;">
+    <div class="pure-u-1-2">
+        <fieldset class="rating">
+            <input type="radio" id="star5" name="rating" value="5"/><label for="star5"></label>
+            <input type="radio" id="star4" name="rating" value="4"/><label for="star4"></label>
+            <input type="radio" id="star3" name="rating" value="3"/><label for="star3"></label>
+            <input type="radio" id="star2" name="rating" value="2"/><label for="star2"></label>
+            <input type="radio" id="star1" name="rating" value="1"/><label for="star1"></label>
+        </fieldset>
     </div>
-    {% else %}
-    <h1>If you want to review the snippet, <a href="{{ url_for('sign_in') }}">make sure to log in!</a></h1>
-    {% endif %}
-    <h1 class="yellow-text">Other reviews</h1>
-    {% if reviews|length == 0 %}
-    <h2>
-        ...What a void!
-        Looks like no one posted a review yet!
-    </h2>
-    {% endif %}
-    <div class="centered-block" style="width: 80%">
-        {% for rating in reviews %}
-            <h1><i>{{rating.username}}</i></h1>
-            <div class="centered-block" style="width: 95px">
-            {% set full_stars = rating.rating %}
-            {% set empty_stars = 5 - full_stars %}
-            {% for i in range(5) %}
-                {% if i < full_stars %}
-                <label class="full-star"></label>
-                {% else %}
-                <label class="empty-star"></label>
-                {% endif %}
-            {% endfor %}
-            </div><br>
-            <textarea rows="3" disabled class="centered-block">{{rating.review}}</textarea>
-        {% endfor %}
-    </div><br>
+    <div class="pure-u-1-2 very-small-top-bottom-margin">
+        <button style="float:right" onclick="review()">Post Review</button>
+    </div>
+</div>
+{% else %}
+<h1>If you want to review the snippet, <a href="{{ url_for('sign_in') }}">make sure to log in!</a></h1>
+{% endif %}
+<div id="other_reviews">{{ reviews_render|safe }}</div>
 <script src="https://unpkg.com/@highlightjs/cdn-assets@10.7.2/highlight.min.js"></script>
 <script src="{{ url_for('static', filename='view.js') }}"></script>
 {% endblock %}

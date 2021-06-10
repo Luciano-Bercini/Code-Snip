@@ -18,15 +18,18 @@ self.addEventListener("install", event => {
     }));
 });
 
-// If a request doesn't match anything in the cache, get it from the network, send it to the page and add it to the cache at the same time.
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.open(cacheName).then(cache => {
-            return cache.match(event.request).then(response => {
-                return response || fetch(event.request).then(response => {
+            return fetch(event.request).then(response => {
+                if (response.ok && event.request.method !== 'POST') {
                     cache.put(event.request, response.clone());
-                    return response;
-                })
+                }
+                return response;
+            })
+        }).catch(error => {
+            caches.match(event.request).then(response => {
+                return response;
             })
         })
     )

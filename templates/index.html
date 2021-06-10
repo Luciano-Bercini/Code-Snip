@@ -7,6 +7,15 @@
     {% include "code_input.html" %}
     {% endwith %}
 </form>
+    {% if username=='Anonymous' %}
+        <h3 class="red-text centered-text medium-text">
+            You are not logged in, as such your snippets will display to public as "Anonymous".
+            To log-in, please head to the "Profile" section.
+        </h3>
+    {% else %}
+        <h3 class="yellow-text centered-text medium-text">You are logged in as "{{username}}", as such your username will be associated with the snippet.</h3>
+    {% endif %}
+</h2>
 <script src="{{ url_for('static', filename='post_snippet.js') }}"></script>
 <script src="{{ url_for('static', filename='register_sw.js') }}"></script>
 {% endblock %}
