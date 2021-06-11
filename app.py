@@ -38,8 +38,8 @@ def sign_up():
             hashed_pass = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             db_users.insert_one({'username': username, 'password': hashed_pass})
             session['username'] = username
-            return redirect('/profile')
-        return 'Username already exists!'
+            return jsonify('Correctly signed in!'), 200
+        return jsonify('Username already exists!'), 400
     return render_template('sign_up.html')
 
 
