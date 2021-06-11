@@ -14,3 +14,6 @@ To run the web app locally, follow these instructions:
 3. Run app.py (which is found in the root folder of the project).
 4. Open your browser to localhost.
 5. Enjoy Code Snippet!
+
+Link to the presentation:
+https://drive.google.com/file/d/1R17elQ6PRK5ffXTL7dTr4oqQLuIryhzy/view?usp=sharing
