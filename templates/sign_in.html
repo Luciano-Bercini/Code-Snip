@@ -2,26 +2,28 @@
 
 {% block body %}
 <h1>To review other snippets and edit/delete your own snippets, make sure to sign in!</h1>
-    <form id="sign_in" method="post" style="margin-top: 5%">
-        <div class="pure-g centered-block centered-text" style="width: 50%">
-            <label class="centered-text" style="color: var(--yellow);">Username</label>
-        <div class="pure-u-1 pure-u-md-4-1">
-            <input type="text" name="username" id="username" class="post-content centered-block" placeholder="Username..."/>
+<form id="sign_in" method="post" style="margin-top: 5%">
+    <div class="pure-g centered-block centered-text" style="width: 50%">
+        <label class="centered-text" style="color: var(--yellow);">Username</label>
+    <div class="pure-u-1 pure-u-md-4-1">
+        <input type="text" name="username" id="username" class="post-content centered-block" placeholder="Username..."/>
+    </div>
+    <label style="color: var(--yellow)">Password</label>
+    <div class="pure-u-1 pure-u-md-4-1">
+        <input type="password" name="password" id="password" class="post-content centered-block" placeholder="Password..."/>
+    </div>
+    <div class="pure-u-1 pure-u-md-4-1">
+        <input type="submit" class="centered-block post-content" value="Sign in"/>
+    </div>
+        <div>
+        <label>Don't have an account?</label>
+        <a href="{{ url_for('sign_up') }}">
+            <p style="letter-spacing: normal">Sign up here!</p>
+        </a>
         </div>
-        <label style="color: var(--yellow)">Password</label>
-        <div class="pure-u-1 pure-u-md-4-1">
-            <input type="password" name="password" id="password" class="post-content centered-block" placeholder="Password..."/>
-        </div>
-        <div class="pure-u-1 pure-u-md-4-1">
-            <input type="submit" class="centered-block post-content" value="Sign in"/>
-        </div>
-            <div>
-            <label>Don't have an account?</label>
-            <a href="{{ url_for('sign_up') }}">
-                <p style="letter-spacing: normal">Sign up here!</p>
-            </a>
-            </div>
-        </div>
-        <br><br>
+    </div>
+    <h2 id="error" class="red-text hidden" style="letter-spacing: normal">Invalid username or password!</h2>
+    <br><br>
 </form>
+<script src="{{ url_for('static', filename='sign_in.js') }}"></script>
 {% endblock %}

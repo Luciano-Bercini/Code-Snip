@@ -1,20 +1,34 @@
+let table = $('#table');
+
 $(document).ready(function () {
-    renderQueryTableInElement('#table');
+    renderUserTable('#table');
     $('#search').submit(function (e) {
         e.preventDefault();
-        renderQueryTableInElement('#table');
+        renderUserTable();
     });
 });
 
-function renderQueryTableInElement(jQueryTableIndex) {
+function renderUserTable() {
     $.ajax({
         type: 'GET',
         url: '/render_user_snippets_table',
         success: (data) => {
-            $(jQueryTableIndex).empty().append(data);
+            table.html(data);
         },
         error: function(error) {
-            console.log("Error: " + JSON.stringify(error));
+            alert(error);
+        }
+    })
+}
+function deleteSnippet(id) {
+        $.ajax({
+        type: 'POST',
+        url: '/delete_snippet/' + id,
+        success: (data) => {
+            renderUserTable();
+        },
+        error: function(error) {
+            alert(error);
         }
     })
 }

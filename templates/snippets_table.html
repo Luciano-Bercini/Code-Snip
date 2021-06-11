@@ -39,7 +39,7 @@
                 <td><a href="{{ url_for('view_snippet', id=snippet._id) }}">View</a></td>
                 {% if username %}
                 <td><a href="{{ url_for('update_snippet', id=snippet._id) }}">Update</a></td>
-                <td><a href="{{ url_for('delete_snippet', id=snippet._id) }}">Delete</a></td>
+                <td><a class="pointer" onclick="deleteSnippet('{{snippet._id}}')">Delete</a></td>
                 {% endif %}
             </tr>
         {% endfor %}

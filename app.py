@@ -52,8 +52,8 @@ def sign_in():
         if login_user:
             if bcrypt.checkpw(password.encode('utf-8'), login_user['password']):
                 session['username'] = username
-                return redirect('/profile')
-        return 'Invalid username/password combination'
+                return jsonify('Correctly signed in!'), 200
+        return jsonify('Invalid username/password combination.'), 400
     return render_template('sign_in.html')
 
 
@@ -106,7 +106,7 @@ def update_snippet(id):
         try:
             db_snippet.update_one({"_id": ObjectId(id)}, {"$set": {"title": title, "content": content, "language": language}})
             return "success"
-        except:
+        except Exception as e:
             return 'There was an issue updating your task.'
     else:
         return render_template('update.html', snippet=snippet)
@@ -122,12 +122,6 @@ def sw():
 @app.route('/view_snippet/<string:id>')
 def view_snippet(id):
     snippet = db_snippet.find_one({"_id": ObjectId(id)})
-    reviews = []
-    if 'ratings' in snippet:
-        # Only consider reviews (the ones with text basically).
-        for rating in snippet['ratings']:
-            if 'review' in rating:
-                reviews.append(rating)
     logged_in = False
     if 'username' in session:
         logged_in = True
@@ -140,7 +134,8 @@ def render_reviews(snippet):
         # Only consider reviews (the ones with text basically).
         for rating in snippet['ratings']:
             if 'review' in rating:
-                reviews.append(rating)
+                if len(rating['review']) > 0:
+                    reviews.append(rating)
     return render_template('reviews.html', reviews=reviews)
 
 
@@ -185,6 +180,15 @@ def render_user_snippets_table():
     return render_template('snippets_table.html', snippets=snippets, username=session['username'])
 
 
+@app.route('/delete_snippet/<string:id>', methods=['POST'])
+def delete_snippet(id):
+    try:
+        db_snippet.delete_one({"_id": ObjectId(id)})
+        return jsonify('Correctly removed the snippet'), 200
+    except Exception as e:
+        return jsonify('There was a problem deleting the task.'), 500
+
+
 def correct_representation_snippets(snippets):
     for snippet in snippets:
         snippet['date'] = snippet['date'].strftime('%d %b %Y')
@@ -211,15 +215,6 @@ def search():
     else:
         snippets = db_snippet.find().sort("date", -1)
     return render_template('/search.html', posts=snippets)
-
-
-@app.route('/delete_snippet/<string:id>')
-def delete_snippet(id):
-    try:
-        db_snippet.delete_one({"_id": ObjectId(id)})
-        return redirect('/profile')
-    except:
-        return 'There was a problem deleting the task.'
 
 
 @app.route('/information')
